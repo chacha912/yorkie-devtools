@@ -1,0 +1,167 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --gray-900: #332e2b;
+  --gray-800: #514c49;
+  --gray-700: #6e6966;
+  --gray-600: #807b78;
+  --gray-500: #a6a19e;
+  --gray-400: #c2bdba;
+  --gray-300: #e2dedb;
+  --gray-200: #efeceb;
+  --gray-100: #f5f3f1;
+  --gray-50: #faf8f6;
+  --gray-000: #fefdfb;
+  --orange-dark: #f27b2f;
+  --orange-0: #fc8539;
+  --orange-light: #fda36a;
+  --yellow-dark: #f5b103;
+  --yellow-0: #fdc433;
+  --yellow-light: #fed366;
+  --green-dark: #10b266;
+  --green-0: #23c176;
+  --green-light: #5ad198;
+  --blue-dark: #208aed;
+  --blue-0: #3c9af1;
+  --blue-light: #6db4f5;
+  --red-dark: #e93d47;
+  --red-0: #f44954;
+  --red-light: #f7777e;
+  --purple-dark: #764af3;
+  --purple-0: #855cf9;
+  --purple-light: #a385fb;
+}
+
+.yorkie-devtools {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100vh;
+}
+
+.content-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 6px 10px;
+}
+
+.yorkie-root {
+  width: 60%;
+  border-right: 1px solid var(--gray-300);
+}
+
+.yorkie-presence {
+  width: 40%;
+}
+
+.content-wrap .title {
+  margin: 6px 0 14px;
+  font-weight: bold;
+  color: var(--gray-900);
+}
+
+.content-wrap .content {
+  flex: 1;
+}
+
+.arborist-tree-container {
+  width: 100%;
+  height: 100%;
+}
+
+.arborist-tree {
+  font-size: 11px;
+  font-family: menlo, monospace;
+  color: #444;
+  white-space: nowrap;
+}
+
+.arborist-tree-row .tree-item {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 16px;
+  padding: 6px 8px;
+  max-width: 100%;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.arborist-tree-row .tree-item:hover {
+  background: var(--gray-50);
+}
+
+.arborist-tree-row .tree-item:after {
+  border: 1px dashed var(--gray-300);
+  border-radius: 0 0 0 4px;
+  border-width: 0 0 1px 1px;
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 26px;
+  top: -14px;
+  left: -18px;
+}
+
+.arborist-tree-row .tree-item:before {
+  border: 1px dashed var(--gray-300);
+  border-width: 0 0 0 1px;
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: -18px;
+  top: 12px;
+}
+
+.arborist-tree-row .tree-item.last-child:before {
+  display: none;
+}
+
+.arborist-tree-row .tree-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--gray-600);
+}
+
+.arborist-tree .timeticket {
+  margin-left: 6px;
+  padding: 2px 6px;
+  background: var(--gray-100);
+  border-radius: 4px;
+  font-size: 90%;
+}
+
+.arborist-tree .icon {
+  margin-right: 6px;
+  height: 16px;
+}
+.arborist-tree .icon.object {
+  color: var(--yellow-light);
+}
+.arborist-tree .icon.array {
+  color: var(--green-light);
+}
+.arborist-tree .icon.primitive {
+  color: var(--gray-400);
+}
+.arborist-tree .icon.text {
+  color: var(--blue-light);
+}
+.arborist-tree .icon.tree {
+  color: var(--purple-light);
+}
+.arborist-tree .icon.counter {
+  color: var(--red-light);
+}
+.arborist-tree .icon.user {
+  color: var(--orange-light);
+}
+.arborist-tree .arrow-icon {
+  margin-right: 4px;
+}
