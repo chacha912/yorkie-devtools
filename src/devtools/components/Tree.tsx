@@ -1,7 +1,9 @@
 import classNames from "classnames"
+import { useEffect } from "react"
 import { Tree as ArboristTree } from "react-arborist"
 import useResizeObserver from "use-resize-observer"
 
+import { useYorkieSeletedDataContext } from "../contexts/YorkieSeletedData"
 import {
   ArrayIcon,
   CounterIcon,
@@ -37,6 +39,15 @@ const TypeIcon = ({ type }) => {
 }
 
 function PresenceNodeRenderer(props) {
+  const { selectedPresence, setSelectedPresence } =
+    useYorkieSeletedDataContext()
+
+  useEffect(() => {
+    if (selectedPresence?.id === props.node.data.id) {
+      setSelectedPresence(props.node.data)
+    }
+  }, [props.node.data])
+
   switch (props.node.data.type) {
     case "USER":
       return (
@@ -57,13 +68,14 @@ function PresenceNodeRenderer(props) {
       return (
         <div
           {...props}
-          onClick={() => props.node.toggle()}
+          onClick={() => setSelectedPresence(props.node.data)}
           className="tree-wrap">
           <span
             className={classNames(
               "tree-item",
               props.node.data.isLastChild && "last-child",
-              props.node.isLeaf && "tree-leaf"
+              props.node.isLeaf && "tree-leaf",
+              selectedPresence?.id === props.node.data.id && "is-selected"
             )}>
             {props.node.data.key} :&nbsp;
             <span className="tree-value">

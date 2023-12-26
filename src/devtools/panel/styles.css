@@ -61,17 +61,20 @@
 
 .content-wrap .title {
   margin: 6px 0 14px;
-  font-weight: bold;
-  color: var(--gray-900);
+  font-weight: 500;
 }
 
 .content-wrap .content {
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .arborist-tree-container {
-  width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
 }
 
 .arborist-tree {
@@ -123,6 +126,10 @@
   display: none;
 }
 
+.arborist-tree .tree-item.is-selected {
+  background: var(--gray-100);
+}
+
 .arborist-tree-row .tree-value {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -164,4 +171,41 @@
 }
 .arborist-tree .arrow-icon {
   margin-right: 4px;
+}
+
+.selected-content {
+  height: 50%;
+  border-top: 1px solid var(--gray-300);
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-title {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  font-weight: 500;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--gray-300);
+  margin-bottom: 6px;
+}
+
+.selected-close-btn {
+  border: none;
+  background: none;
+  width: 16px;
+  height: 16px;
+  color: var(--gray-300);
+  cursor: pointer;
+}
+
+.selected-close-btn:hover {
+  color: var(--gray-500);
+}
+
+.prism-code {
+  font-family: menlo, monospace;
+  font-size: 0.5em;
+  flex: 1;
+  overflow: auto;
 }

@@ -125,3 +125,20 @@ export function UserIcon(props: ComponentProps<"svg">) {
     </svg>
   )
 }
+
+export function CloseIcon(props: ComponentProps<"svg">) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M12.03 5.03a.75.75 0 0 0-1.06-1.06L8 6.94 5.03 3.97a.75.75 0 0 0-1.06 1.06L6.94 8l-2.97 2.97a.75.75 0 1 0 1.06 1.06L8 9.06l2.97 2.97a.75.75 0 1 0 1.06-1.06L9.06 8l2.97-2.97Z"
+        fill="currentColor"></path>
+    </svg>
+  )
+}

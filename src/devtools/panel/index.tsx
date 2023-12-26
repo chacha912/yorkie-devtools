@@ -1,13 +1,21 @@
 import { createRoot } from "react-dom/client"
 
+import { Code } from "../components/Code"
 import { PresenceTree, RootTree } from "../components/Tree"
+import {
+  useYorkieSeletedDataContext,
+  YorkieSeletedDataProvider
+} from "../contexts/YorkieSeletedData"
 import {
   useYorkieSourceContext,
   YorkieSourceProvider
 } from "../contexts/YorkieSource"
+import { CloseIcon } from "../icons"
 
 const Panel = () => {
   const { currentDocKey, root, presences } = useYorkieSourceContext()
+  const { selectedPresence, setSelectedPresence } =
+    useYorkieSeletedDataContext()
 
   return (
     <div className="yorkie-devtools">
@@ -21,6 +29,25 @@ const Panel = () => {
         <div className="title">Presence</div>
         <div className="content">
           <PresenceTree data={presences} />
+          {selectedPresence && (
+            <div className="selected-content">
+              <div className="selected-title">
+                {selectedPresence.key}
+                <button
+                  className="selected-close-btn"
+                  onClick={() => {
+                    setSelectedPresence(null)
+                  }}>
+                  <CloseIcon />
+                </button>
+              </div>
+              <Code
+                code={JSON.stringify(selectedPresence.value, null, 2)}
+                language="json"
+                withLineNumbers
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -30,7 +57,9 @@ const Panel = () => {
 function PanelApp() {
   return (
     <YorkieSourceProvider>
-      <Panel />
+      <YorkieSeletedDataProvider>
+        <Panel />
+      </YorkieSeletedDataProvider>
     </YorkieSourceProvider>
   )
 }
