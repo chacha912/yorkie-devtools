@@ -11,8 +11,17 @@ const YorkieSourceContext = createContext<CurrentSourceContext | null>(null)
 type Props = {
   children?: ReactNode
 }
+const RootPath = "$"
+const RootKey = "root"
 const InitialRoot = [
-  { id: "0:00:0", key: "root", type: "YORKIE_OBJECT", value: {} }
+  {
+    id: RootPath,
+    path: RootPath,
+    key: RootKey,
+    createdAt: "0:00:0",
+    type: "YORKIE_OBJECT",
+    value: {}
+  }
 ]
 export function YorkieSourceProvider({ children }: Props) {
   const [currentDocKey, setCurrentDocKey] = useState<string | null>(null)
@@ -35,7 +44,9 @@ export function YorkieSourceProvider({ children }: Props) {
         }))
       )
       if (message.root) {
-        setRoot([{ ...message.root, key: "root" }])
+        setRoot([
+          { ...message.root, key: RootKey, id: RootPath, path: RootPath }
+        ])
       }
       if (message.docKey) {
         setCurrentDocKey(message.docKey)

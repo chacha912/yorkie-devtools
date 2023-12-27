@@ -14,8 +14,12 @@ import { CloseIcon } from "../icons"
 
 const Panel = () => {
   const { currentDocKey, root, presences } = useYorkieSourceContext()
-  const { selectedPresence, setSelectedPresence } =
-    useYorkieSeletedDataContext()
+  const {
+    selectedPresence,
+    setSelectedPresence,
+    selectedNode,
+    setSelectedNode
+  } = useYorkieSeletedDataContext()
 
   return (
     <div className="yorkie-devtools">
@@ -23,6 +27,25 @@ const Panel = () => {
         <div className="title">{currentDocKey || "Document"}</div>
         <div className="content">
           <RootTree data={root} />
+          {selectedNode && (
+            <div className="selected-content">
+              <div className="selected-title">
+                {selectedNode.id}
+                <button
+                  className="selected-close-btn"
+                  onClick={() => {
+                    setSelectedNode(null)
+                  }}>
+                  <CloseIcon />
+                </button>
+              </div>
+              <Code
+                code={JSON.stringify(selectedNode.value, null, 2)}
+                language="json"
+                withLineNumbers
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="yorkie-presence content-wrap">

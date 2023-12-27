@@ -74,7 +74,6 @@ function PresenceNodeRenderer(props) {
             className={classNames(
               "tree-item",
               props.node.data.isLastChild && "last-child",
-              props.node.isLeaf && "tree-leaf",
               selectedPresence?.id === props.node.data.id && "is-selected"
             )}>
             {props.node.data.key} :&nbsp;
@@ -91,6 +90,14 @@ function PresenceNodeRenderer(props) {
 
 function RootNodeRenderer(props) {
   const type = props.node.data.type.split("YORKIE_")[1].toLowerCase()
+  const { selectedNode, setSelectedNode } = useYorkieSeletedDataContext()
+
+  useEffect(() => {
+    if (selectedNode?.id === props.node.data.id) {
+      setSelectedNode(props.node.data)
+    }
+  }, [props.node.data])
+
   switch (props.node.data.type) {
     case "YORKIE_OBJECT":
     case "YORKIE_ARRAY":
@@ -109,7 +116,7 @@ function RootNodeRenderer(props) {
               <TypeIcon type={props.node.data.type} />
             </span>
             {props.node.data.key}
-            <span className="timeticket">{props.node.data.id}</span>
+            <span className="timeticket">{props.node.data.createdAt}</span>
           </span>
         </div>
       )
@@ -117,12 +124,13 @@ function RootNodeRenderer(props) {
       return (
         <div
           {...props}
-          onClick={() => props.node.toggle()}
+          onClick={() => setSelectedNode(props.node.data)}
           className="tree-wrap">
           <span
             className={classNames(
               "tree-item",
-              props.node.data.isLastChild && "last-child"
+              props.node.data.isLastChild && "last-child",
+              selectedNode?.id === props.node.data.id && "is-selected"
             )}>
             <span className={classNames("icon", type)} title={type}>
               <TypeIcon type={props.node.data.type} />
@@ -131,7 +139,7 @@ function RootNodeRenderer(props) {
             <span className="tree-value">
               {JSON.stringify(props.node.data.value)}
             </span>
-            <span className="timeticket">{props.node.data.id}</span>
+            <span className="timeticket">{props.node.data.createdAt}</span>
           </span>
         </div>
       )
@@ -156,14 +164,19 @@ function rootChildAccessor(node) {
   }
   const length = Object.keys(node.value).length
   const res = Object.entries(node.value).map(([_, v]: any, i) => {
+    const path = `${node.path}.${v.key}`
     if (v.type === "YORKIE_OBJECT" || v.type === "YORKIE_ARRAY") {
       return {
         ...v,
+        id: path,
+        path,
         isLastChild: i === length - 1
       }
     } else {
       return {
         ...v,
+        id: path,
+        path,
         isLastChild: i === length - 1
       }
     }
