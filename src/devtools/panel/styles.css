@@ -180,9 +180,15 @@
   flex-direction: column;
 }
 
+.selected-view {
+  flex: 1;
+  min-height: 0;
+}
+
 .selected-title {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 0.9em;
   font-weight: 500;
   padding: 6px 8px;
@@ -203,9 +209,50 @@
   color: var(--gray-500);
 }
 
+.selected-view-tabmenu {
+  position: absolute;
+  right: 0;
+  display: flex;
+  margin-right: 14px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.selected-view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-right: 1px solid var(--gray-300);
+  background: none;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: var(--gray-300);
+}
+
+.selected-view-btn:last-child {
+  border-right: none;
+}
+
+.selected-view-btn:hover {
+  color: var(--gray-500);
+}
+
+.selected-view-btn.is-selected {
+  background: var(--gray-300);
+  color: var(--gray-500);
+}
+
+.selected-view-tab {
+  height: 100%;
+  position: relative;
+}
+
 .prism-code {
   font-family: menlo, monospace;
   font-size: 0.5em;
-  flex: 1;
+  height: 100%;
   overflow: auto;
 }

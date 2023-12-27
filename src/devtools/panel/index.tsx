@@ -1,3 +1,5 @@
+import classNames from "classnames"
+import { useState } from "react"
 import { createRoot } from "react-dom/client"
 
 import { Code } from "../components/Code"
@@ -10,10 +12,55 @@ import {
   useYorkieSourceContext,
   YorkieSourceProvider
 } from "../contexts/YorkieSource"
-import { CloseIcon } from "../icons"
+import { CloseIcon, CodeIcon, GraphIcon } from "../icons"
+
+const TreeDetail = ({ node, tree }) => {
+  const [viewType, setViewType] = useState("data")
+
+  return (
+    <div className="selected-view-tab">
+      <div className="selected-view-tabmenu">
+        <button
+          className={classNames(
+            "selected-view-btn",
+            viewType === "data" && "is-selected"
+          )}
+          onClick={() => {
+            setViewType("data")
+          }}>
+          <CodeIcon />
+        </button>
+        <button
+          className={classNames(
+            "selected-view-btn",
+            viewType === "tree" && "is-selected"
+          )}
+          onClick={() => {
+            setViewType("tree")
+          }}>
+          <GraphIcon />
+        </button>
+      </div>
+      {viewType === "data" && (
+        <Code
+          code={JSON.stringify(node.value, null, 2)}
+          language="json"
+          withLineNumbers
+        />
+      )}
+      {viewType === "tree" && (
+        <Code
+          code={JSON.stringify(tree, null, 2)}
+          language="json"
+          withLineNumbers
+        />
+      )}
+    </div>
+  )
+}
 
 const Panel = () => {
-  const { currentDocKey, root, presences } = useYorkieSourceContext()
+  const { currentDocKey, root, presences, tree } = useYorkieSourceContext()
   const {
     selectedPresence,
     setSelectedPresence,
@@ -39,11 +86,17 @@ const Panel = () => {
                   <CloseIcon />
                 </button>
               </div>
-              <Code
-                code={JSON.stringify(selectedNode.value, null, 2)}
-                language="json"
-                withLineNumbers
-              />
+              <div className="selected-view">
+                {selectedNode.type === "YORKIE_TREE" ? (
+                  <TreeDetail node={selectedNode} tree={tree} />
+                ) : (
+                  <Code
+                    code={JSON.stringify(selectedNode.value, null, 2)}
+                    language="json"
+                    withLineNumbers
+                  />
+                )}
+              </div>
             </div>
           )}
         </div>

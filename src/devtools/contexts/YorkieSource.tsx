@@ -5,6 +5,7 @@ type CurrentSourceContext = {
   currentDocKey: string | null
   root: any
   presences: any
+  tree: any
 }
 const YorkieSourceContext = createContext<CurrentSourceContext | null>(null)
 
@@ -27,10 +28,11 @@ export function YorkieSourceProvider({ children }: Props) {
   const [currentDocKey, setCurrentDocKey] = useState<string | null>(null)
   const [root, setRoot] = useState(InitialRoot)
   const [presences, setPresences] = useState([])
+  const [tree, setTree] = useState({})
 
   const value = useMemo(
-    () => ({ currentDocKey, setCurrentDocKey, root, presences }),
-    [currentDocKey, setCurrentDocKey, root, presences]
+    () => ({ currentDocKey, setCurrentDocKey, root, presences, tree }),
+    [currentDocKey, setCurrentDocKey, root, presences, tree]
   )
 
   useEffect(() => {
@@ -50,6 +52,9 @@ export function YorkieSourceProvider({ children }: Props) {
       }
       if (message.docKey) {
         setCurrentDocKey(message.docKey)
+      }
+      if (message.tree) {
+        setTree(message.tree)
       }
     })
   }, [])
