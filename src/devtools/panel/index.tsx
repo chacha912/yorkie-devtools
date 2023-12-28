@@ -14,6 +14,69 @@ import {
 } from "../contexts/YorkieSource"
 import { CloseIcon, CodeIcon, GraphIcon } from "../icons"
 
+const TreeNode = ({ node, setSelectedNode, selectedNode }) => {
+  if (node.type === "text") {
+    const depth = node.index === 0 ? node.depth : 0
+    return (
+      <div
+        className={classNames(
+          "tree-node",
+          "text",
+          selectedNode?.id === node.id && "is-selected"
+        )}
+        style={{ "--depth": depth } as any}>
+        <span
+          className="node-item"
+          onClick={() => {
+            setSelectedNode(node)
+          }}>
+          <span>{node.value}</span>
+          <span className="timeticket">{node.id}</span>
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className={classNames(
+        "tree-node",
+        selectedNode?.id === node.id && "is-selected"
+      )}
+      style={{ "--depth": node.depth } as any}>
+      <span
+        className="node-item"
+        onClick={() => {
+          setSelectedNode(node)
+        }}>
+        <span>{node.type}</span>
+        <span className="timeticket">{node.id}</span>
+      </span>
+    </div>
+  )
+}
+
+const TreeView = ({ tree }) => {
+  const [selectedNode, setSelectedNode] = useState(null)
+  const flattenTreeWithDepth = (node, depth = 0, i = 0) => {
+    const flattenedNode = { ...node, depth, index: i }
+
+    const children = (node.children || []).flatMap((child, i) =>
+      flattenTreeWithDepth(child, depth + 1, i)
+    )
+
+    return [flattenedNode, ...children]
+  }
+
+  return flattenTreeWithDepth(tree).map((node) => (
+    <TreeNode
+      node={node}
+      selectedNode={selectedNode}
+      setSelectedNode={setSelectedNode}
+    />
+  ))
+}
+
 const TreeDetail = ({ node, tree }) => {
   const [viewType, setViewType] = useState("data")
 
@@ -48,13 +111,7 @@ const TreeDetail = ({ node, tree }) => {
           withLineNumbers
         />
       )}
-      {viewType === "tree" && (
-        <Code
-          code={JSON.stringify(tree, null, 2)}
-          language="json"
-          withLineNumbers
-        />
-      )}
+      {viewType === "tree" && <TreeView tree={tree} />}
     </div>
   )
 }

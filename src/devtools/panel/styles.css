@@ -248,6 +248,8 @@
 .selected-view-tab {
   height: 100%;
   position: relative;
+  overflow: scroll;
+  white-space: nowrap;
 }
 
 .prism-code {
@@ -255,4 +257,47 @@
   font-size: 0.5em;
   height: 100%;
   overflow: auto;
+}
+
+.tree-node {
+  margin-left: calc(16px * var(--depth));
+  margin-bottom: 2px;
+  font-family: menlo, monospace;
+  color: #444;
+  font-size: 0.9em;
+}
+
+.tree-node.text {
+  display: inline-block;
+}
+
+.tree-node .node-item {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 2px 4px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tree-node .node-item:hover {
+  background: var(--gray-300) !important;
+}
+
+.tree-node.is-selected .node-item {
+  background: var(--gray-600) !important;
+  color: var(--gray-50);
+}
+
+.tree-node.text .node-item {
+  background: var(--gray-100);
+}
+
+.tree-node span {
+  padding: 2px;
+}
+
+.tree-node .timeticket {
+  border-top: 1px solid var(--gray-300);
+  font-size: 9px;
 }
