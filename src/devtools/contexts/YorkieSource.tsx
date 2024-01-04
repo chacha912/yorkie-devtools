@@ -1,5 +1,14 @@
 import type { ReactNode } from "react"
-import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from "react"
+
+import type { SDKToPanelMessage } from "../../protocol"
 
 type CurrentSourceContext = {
   currentDocKey: string | null
@@ -35,28 +44,46 @@ export function YorkieSourceProvider({ children }: Props) {
     [currentDocKey, setCurrentDocKey, root, presences, tree]
   )
 
+  const handleMessage = useCallback((message: SDKToPanelMessage) => {
+    console.log("✅ sdk --> content --> panel", message)
+    switch (message.msg) {
+      case "doc::available":
+        console.log("🎃room available")
+        if (message.docKey) {
+          setCurrentDocKey(message.docKey)
+        }
+        break
+      case "doc::unavailable":
+        break
+      case "doc::sync::full":
+        break
+      case "doc::sync::partial":
+        console.log("🎃partial update")
+        if (message.root) {
+          setRoot([
+            { ...message.root, key: RootKey, id: RootPath, path: RootPath }
+          ])
+        }
+        if (message.clients) {
+          setPresences(
+            message.clients.map((client) => ({
+              ...client,
+              id: client.clientID,
+              type: "USER"
+            }))
+          )
+        }
+        break
+      default:
+        break
+    }
+  }, [])
+
   useEffect(() => {
-    chrome.runtime.onMessage.addListener((message) => {
-      console.log("panel receive message ✅")
-      setPresences(
-        message.clients.map((client) => ({
-          ...client,
-          id: client.clientID,
-          type: "USER"
-        }))
-      )
-      if (message.root) {
-        setRoot([
-          { ...message.root, key: RootKey, id: RootPath, path: RootPath }
-        ])
-      }
-      if (message.docKey) {
-        setCurrentDocKey(message.docKey)
-      }
-      if (message.tree) {
-        setTree(message.tree)
-      }
-    })
+    chrome.runtime.onMessage.addListener(handleMessage)
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage)
+    }
   }, [])
 
   return (
