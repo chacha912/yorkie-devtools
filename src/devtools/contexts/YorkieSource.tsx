@@ -8,7 +8,7 @@ import {
   useState
 } from "react"
 
-import type { SDKToPanelMessage } from "../../protocol"
+import type { PanelToSDKMessage, SDKToPanelMessage } from "../../protocol"
 
 type CurrentSourceContext = {
   currentDocKey: string | null
@@ -33,6 +33,18 @@ const InitialRoot = [
     value: {}
   }
 ]
+
+const sendMessageToTabs = async (message: PanelToSDKMessage) => {
+  const [tab] = await chrome.tabs.query({
+    active: true
+  })
+  await chrome.tabs.sendMessage(tab.id, {
+    ...message,
+    source: "yorkie-devtools-panel",
+    tabId: tab.id
+  })
+}
+
 export function YorkieSourceProvider({ children }: Props) {
   const [currentDocKey, setCurrentDocKey] = useState<string | null>(null)
   const [root, setRoot] = useState(InitialRoot)
@@ -48,14 +60,27 @@ export function YorkieSourceProvider({ children }: Props) {
     console.log("✅ sdk --> content --> panel", message)
     switch (message.msg) {
       case "doc::available":
-        console.log("🎃room available")
-        if (message.docKey) {
-          setCurrentDocKey(message.docKey)
-        }
+        console.log("🎃doc available")
+        setCurrentDocKey(message.docKey)
+        sendMessageToTabs({
+          msg: "devtools::subscribe",
+          docKey: message.docKey
+        })
         break
       case "doc::unavailable":
         break
       case "doc::sync::full":
+        console.log("🎃full update")
+        setRoot([
+          { ...message.root, key: RootKey, id: RootPath, path: RootPath }
+        ])
+        setPresences(
+          message.clients.map((client) => ({
+            ...client,
+            id: client.clientID,
+            type: "USER"
+          }))
+        )
         break
       case "doc::sync::partial":
         console.log("🎃partial update")
@@ -80,6 +105,7 @@ export function YorkieSourceProvider({ children }: Props) {
   }, [])
 
   useEffect(() => {
+    sendMessageToTabs({ msg: "devtools::connect" })
     chrome.runtime.onMessage.addListener(handleMessage)
     return () => {
       chrome.runtime.onMessage.removeListener(handleMessage)

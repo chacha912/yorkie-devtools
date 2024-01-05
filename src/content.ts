@@ -8,3 +8,8 @@ window.addEventListener("message", (event) => {
     chrome.runtime.sendMessage(message as FullSDKToPanelMessage)
   }
 })
+
+chrome.runtime.onMessage.addListener((message) => {
+  console.log("💌 msg from devtools", message)
+  window.postMessage(message, "*")
+})
