@@ -4,6 +4,7 @@ import { Tree as ArboristTree } from "react-arborist"
 import useResizeObserver from "use-resize-observer"
 
 import { useYorkieSeletedDataContext } from "../contexts/YorkieSeletedData"
+import { sendMessageToTabs } from "../contexts/YorkieSource"
 import {
   ArrayIcon,
   CounterIcon,
@@ -95,6 +96,13 @@ function RootNodeRenderer(props) {
   useEffect(() => {
     if (selectedNode?.id === props.node.data.id) {
       setSelectedNode(props.node.data)
+      sendMessageToTabs({
+        msg: "devtools::node::detail",
+        data: {
+          path: props.node.data.path,
+          type: props.node.data.type
+        }
+      })
     }
   }, [props.node.data])
 

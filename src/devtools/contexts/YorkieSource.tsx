@@ -14,7 +14,7 @@ type CurrentSourceContext = {
   currentDocKey: string | null
   root: any
   presences: any
-  tree: any
+  nodeDetail: any
 }
 const YorkieSourceContext = createContext<CurrentSourceContext | null>(null)
 
@@ -34,7 +34,7 @@ const InitialRoot = [
   }
 ]
 
-const sendMessageToTabs = async (message: PanelToSDKMessage) => {
+export const sendMessageToTabs = async (message: PanelToSDKMessage) => {
   const [tab] = await chrome.tabs.query({
     active: true
   })
@@ -49,11 +49,11 @@ export function YorkieSourceProvider({ children }: Props) {
   const [currentDocKey, setCurrentDocKey] = useState<string | null>(null)
   const [root, setRoot] = useState(InitialRoot)
   const [presences, setPresences] = useState([])
-  const [tree, setTree] = useState({})
+  const [nodeDetail, setNodeDetail] = useState(null)
 
   const value = useMemo(
-    () => ({ currentDocKey, setCurrentDocKey, root, presences, tree }),
-    [currentDocKey, setCurrentDocKey, root, presences, tree]
+    () => ({ currentDocKey, setCurrentDocKey, root, presences, nodeDetail }),
+    [currentDocKey, setCurrentDocKey, root, presences, nodeDetail]
   )
 
   const handleMessage = useCallback((message: SDKToPanelMessage) => {
@@ -97,6 +97,10 @@ export function YorkieSourceProvider({ children }: Props) {
               type: "USER"
             }))
           )
+        }
+        if (message.nodeDetail) {
+          console.log("🎃partial update", message.nodeDetail)
+          setNodeDetail(message.nodeDetail)
         }
         break
       default:

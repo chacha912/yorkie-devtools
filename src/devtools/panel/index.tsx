@@ -14,7 +14,7 @@ import {
 } from "../contexts/YorkieSource"
 import { CloseIcon, CodeIcon, GraphIcon } from "../icons"
 
-const TreeNode = ({ node, setSelectedNode, selectedNode }) => {
+const TreeNode = ({ node, setSelectedTreeNode, selectedTreeNode }) => {
   if (node.type === "text") {
     const depth = node.index === 0 ? node.depth : 0
     return (
@@ -22,13 +22,13 @@ const TreeNode = ({ node, setSelectedNode, selectedNode }) => {
         className={classNames(
           "tree-node",
           "text",
-          selectedNode?.id === node.id && "is-selected"
+          selectedTreeNode?.id === node.id && "is-selected"
         )}
         style={{ "--depth": depth } as any}>
         <span
           className="node-item"
           onClick={() => {
-            setSelectedNode(node)
+            setSelectedTreeNode(node)
           }}>
           <span>{node.value}</span>
           <span className="timeticket">{node.id}</span>
@@ -41,13 +41,13 @@ const TreeNode = ({ node, setSelectedNode, selectedNode }) => {
     <div
       className={classNames(
         "tree-node",
-        selectedNode?.id === node.id && "is-selected"
+        selectedTreeNode?.id === node.id && "is-selected"
       )}
       style={{ "--depth": node.depth } as any}>
       <span
         className="node-item"
         onClick={() => {
-          setSelectedNode(node)
+          setSelectedTreeNode(node)
         }}>
         <span>{node.type}</span>
         <span className="timeticket">{node.id}</span>
@@ -57,7 +57,7 @@ const TreeNode = ({ node, setSelectedNode, selectedNode }) => {
 }
 
 const TreeView = ({ tree }) => {
-  const [selectedNode, setSelectedNode] = useState(null)
+  const [selectedTreeNode, setSelectedTreeNode] = useState(null)
   const flattenTreeWithDepth = (node, depth = 0, i = 0) => {
     const flattenedNode = { ...node, depth, index: i }
 
@@ -70,9 +70,10 @@ const TreeView = ({ tree }) => {
 
   return flattenTreeWithDepth(tree).map((node) => (
     <TreeNode
+      key={node.id}
       node={node}
-      selectedNode={selectedNode}
-      setSelectedNode={setSelectedNode}
+      selectedTreeNode={selectedTreeNode}
+      setSelectedTreeNode={setSelectedTreeNode}
     />
   ))
 }
@@ -111,13 +112,14 @@ const TreeDetail = ({ node, tree }) => {
           withLineNumbers
         />
       )}
-      {viewType === "tree" && <TreeView tree={tree} />}
+      {viewType === "tree" && tree && <TreeView tree={tree} />}
     </div>
   )
 }
 
 const Panel = () => {
-  const { currentDocKey, root, presences, tree } = useYorkieSourceContext()
+  const { currentDocKey, root, presences, nodeDetail } =
+    useYorkieSourceContext()
   const {
     selectedPresence,
     setSelectedPresence,
@@ -145,10 +147,10 @@ const Panel = () => {
               </div>
               <div className="selected-view">
                 {selectedNode.type === "YORKIE_TREE" ? (
-                  <TreeDetail node={selectedNode} tree={tree} />
+                  <TreeDetail node={selectedNode} tree={nodeDetail} />
                 ) : (
                   <Code
-                    code={JSON.stringify(selectedNode.value, null, 2)}
+                    code={JSON.stringify(selectedNode?.value, null, 2)}
                     language="json"
                     withLineNumbers
                   />
